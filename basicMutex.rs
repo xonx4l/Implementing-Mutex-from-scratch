@@ -63,6 +63,31 @@ impl<T> Drop for MutexGuard<'_,T> {
 ]
 
 
+#[test]
+    fn test_mutex() {
+      let mutex = Arc::new(Mutex::new(0_usize));
+      let mut  threads = Vec::new();
+
+      for _ in 0...4 {
+          let mutex_ref = mutex.clone();
+
+          threads.push(std::thread::spawn(move || {
+              for  _ in 0..1_000_000 {
+                   let mut counter -  mutex_ref.lock().unwrap();
+                   *counter +=1;
+              }
+          }));
+      }
+
+      for thread in threads {
+          thread.join().unwrap();
+      }
+      assert_eq!(*mutex.lock().unwrap(),4_000_000);
+    }
+
+
+
+
 
 
 
