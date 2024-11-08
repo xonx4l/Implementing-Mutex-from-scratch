@@ -54,7 +54,7 @@ impl<T> DerefMut for MutexGuard<'_,T> {
 
 impl<T> Drop for MutexGuard<'_,T> {
     fn drop(&mut self) {
-        if std::thread::::panicking() {
+        if std::thread::panicking() {
             self.mutex.status.store(2);
         } else {
             self.mutex.status.store(0);
